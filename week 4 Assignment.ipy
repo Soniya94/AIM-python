@@ -1,0 +1,122 @@
+# Lesson 4 Individual Assignment
+# Digital Banking Transaction Audit Tool
+# Author: Soniya Pariyar
+
+
+# ---------------------------------------------------------
+# TASK 1 - Functional transaction processing
+# ---------------------------------------------------------
+
+def clean_transactions(amounts, min_threshold=10.0):
+    """Keep only positive amounts that are at least min_threshold."""
+    # filter() keeps an amount only if the lambda returns True
+    valid = filter(lambda amount: amount > 0 and amount >= min_threshold, amounts)
+    # filter() gives a filter object, so list() turns it into a list
+    return list(valid)
+
+
+def apply_service_fee(amounts, fee_rate=0.02):
+    """Deduct a percentage service fee from every amount."""
+    # map() applies the lambda to every amount
+    processed = map(lambda amount: amount - (amount * fee_rate), amounts)
+    # map() gives a map object, so list() turns it into a list
+    return list(processed)
+
+
+# ---------------------------------------------------------
+# TASK 2 - Purely recursive nested total
+# ---------------------------------------------------------
+
+def calculate_nested_total(data):
+    """Return the total of a number or an arbitrarily nested list of numbers."""
+    # Base case 2: a single number (int or float) -> return it
+    if isinstance(data, (int, float)):
+        return data
+
+    # Base case 1: an empty list -> total is 0.0
+    if data == []:
+        return 0.0
+
+    # Recursive step: split the list into head and tail
+    head = data[0]      # first item (a number or another list)
+    tail = data[1:]     # everything after the first item (always a list)
+
+    # Resolve both parts recursively and add them
+    return calculate_nested_total(head) + calculate_nested_total(tail)
+
+
+# ---------------------------------------------------------
+# TEST DATA AND FUNCTION CALLS
+# ---------------------------------------------------------
+
+print("Digital Banking Transaction Audit Tool")
+print()
+
+# ----- Section A: clean_transactions() -----
+print("=== Task 1.1: clean_transactions() ===")
+print()
+
+# Test 1: default threshold (10.0)
+raw_amounts = [-20, 5, 10, 25, 100, 0]
+print("Test 1: default min_threshold")
+print("Input :", raw_amounts)
+print("Output:", clean_transactions(raw_amounts))
+print()
+
+# Test 2: custom threshold
+print("Test 2: min_threshold=20")
+print("Input :", [5, 15, 20, 50])
+print("Output:", clean_transactions([5, 15, 20, 50], 20))
+print()
+
+# ----- Section B: apply_service_fee() -----
+print("=== Task 1.2: apply_service_fee() ===")
+print()
+
+# Test 3: default fee rate (2%)
+print("Test 3: default fee_rate")
+print("Input :", [10, 25, 100])
+print("Output:", apply_service_fee([10, 25, 100]))
+print()
+
+# ----- Section C: calculate_nested_total() -----
+print("=== Task 2: calculate_nested_total() ===")
+print()
+
+# Test 4: nested list
+nested_batch = [100, [50, 25], [[10, 5], 40]]
+print("Test 4: nested list")
+print("Input :", nested_batch)
+print("Output:", calculate_nested_total(nested_batch))
+print()
+
+# Test 5: empty list
+print("Test 5: empty list")
+print("Input : []")
+print("Output:", calculate_nested_total([]))
+print()
+
+# Test 6: single number
+print("Test 6: single number")
+print("Input : 50")
+print("Output:", calculate_nested_total(50))
+print()
+
+# Test 7: floats and deeper nesting
+print("Test 7: floats and deeper nesting")
+print("Input :", [10.5, [20.25, [[5.0]]]])
+print("Output:", calculate_nested_total([10.5, [20.25, [[5.0]]]]))
+print()
+
+# ----- Section D: all functions together -----
+print("=== Full audit pipeline ===")
+print()
+
+# Test 8: clean -> apply fee -> total
+cleaned = clean_transactions(raw_amounts)
+after_fee = apply_service_fee(cleaned)
+total = calculate_nested_total(after_fee)
+print("Test 8: clean, then fee, then total")
+print("Cleaned    :", cleaned)
+print("After fee  :", after_fee)
+print("Total      :", f"{total:.2f}")
